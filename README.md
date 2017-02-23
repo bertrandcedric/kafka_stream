@@ -30,3 +30,15 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic achats-b
 ```
 http://localhost:7077/kafka/referentiels
 ```
+
+####Build
+
+Pour tester la version java (utilisation du profil par defaut)
+```
+mvn clean package
+```
+
+Pour tester la version scala (utilisation du profil scala)
+```
+mvn clean package -P scala
+```

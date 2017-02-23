@@ -1,4 +1,4 @@
-package com.test.rest;
+package com.java.test.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,8 +9,7 @@ import javax.ws.rs.core.MediaType;
 public class SampleServerRest extends ServerRest {
 
     public static void main(String[] args) throws Exception {
-        SampleServerRest server = new SampleServerRest();
-        server.start();
+        new SampleServerRest().start();
     }
 
     @GET

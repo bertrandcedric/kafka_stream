@@ -1,4 +1,4 @@
-package com.test.model;
+package com.java.test.model;
 
 public class Referentiel {
 

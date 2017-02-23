@@ -1,6 +1,6 @@
-package com.test.rest;
+package com.java.test.rest;
 
-import com.test.model.Referentiel;
+import com.java.test.model.Referentiel;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -13,10 +13,10 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.test.KafkaStream.REFERENTIEL_STORE;
+import static com.java.test.KafkaStream.REFERENTIEL_STORE;
 
 @Path("/kafka")
-public class KafkaRestService extends ServerRest {
+public class KafkaRestService extends com.java.test.rest.ServerRest {
 
     private final KafkaStreams streams;
 
@@ -43,5 +43,4 @@ public class KafkaRestService extends ServerRest {
     public String hello() {
         return "Hello world";
     }
-
 }
