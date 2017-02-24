@@ -3,6 +3,7 @@ package com.scala.test
 import java.util.Properties
 
 import com.scala.test.model.{ProduitBrut, ProduitEnrichi, Referentiel}
+import com.scala.test.rest.KafkaRestService
 import com.scala.test.serializer.{JsonDeserializer, JsonSerializer}
 import org.apache.kafka.common.serialization.{Serde, Serdes}
 import org.apache.kafka.streams.kstream._
@@ -12,8 +13,7 @@ import org.slf4j.LoggerFactory
 class KafkaStream {
 }
 
-object KafkaStream {
-
+object KafkaStream extends App {
   val REFERENTIEL_STORE = "referentiel_store"
   val BOOTSTRAP_SERVER = "localhost:9092"
   val TOPIC_ACHATS = "achats"
@@ -24,29 +24,36 @@ object KafkaStream {
 
   val logger = LoggerFactory.getLogger(classOf[KafkaStream])
 
-  def main(args: Array[String]) {
+  val streamsConfiguration = new Properties()
+  streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, APPLICATION_ID)
+  streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER)
 
-    val streamsConfiguration = new Properties()
-    streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, APPLICATION_ID)
-    streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER)
+  val builder = new KStreamBuilder()
 
-    val builder = new KStreamBuilder()
+  val achatBrutSerde: Serde[ProduitBrut] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[ProduitBrut])
+  val achatEnrichiSerde: Serde[ProduitEnrichi] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[ProduitEnrichi])
+  val referentielSerde: Serde[Referentiel] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[Referentiel])
 
-    val achatBrutSerde: Serde[ProduitBrut] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[ProduitBrut])
-    val achatEnrichiSerde: Serde[ProduitEnrichi] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[ProduitEnrichi])
-    val referentielSerde: Serde[Referentiel] = Serdes.serdeFrom(new JsonSerializer(), new JsonDeserializer[Referentiel])
+  val achats: KStream[String, ProduitBrut] = builder.stream(Serdes.String(), achatBrutSerde, TOPIC_ACHATS)
 
-    val achats: KStream[String, ProduitBrut] = builder.stream(Serdes.String(), achatBrutSerde, TOPIC_ACHATS)
+  val referentiel: KTable[String, Referentiel] = builder.table(Serdes.String(), referentielSerde, TOPIC_REFERENTIEL, REFERENTIEL_STORE)
 
-    val referentiel: KTable[String, Referentiel] = builder.table(Serdes.String(), referentielSerde, TOPIC_REFERENTIEL, REFERENTIEL_STORE)
-
-    val enriched = achats
-      .filter((k, v) => v != null)
-      .map((k, v) => new KeyValue(v.id.toString, v))
-      .through(Serdes.String(), achatBrutSerde, TOPIC_ACHATS_BY_PRODUCT_ID)
-      .leftJoin(referentiel, (achat, ref: Referentiel) => {
+  val enriched = achats
+    .filter(new Predicate[String, ProduitBrut] {
+      override def test(key: String, value: ProduitBrut) = {
+        value != null
+      }
+    })
+    .map(new KeyValueMapper[String, ProduitBrut, KeyValue[String, ProduitBrut]] {
+      override def apply(key: String, value: ProduitBrut) = {
+        new KeyValue(value.id.toString, value)
+      }
+    })
+    .through(Serdes.String(), achatBrutSerde, TOPIC_ACHATS_BY_PRODUCT_ID)
+    .leftJoin(referentiel, new ValueJoiner[ProduitBrut, Referentiel, ProduitEnrichi]() {
+      override def apply(achat: ProduitBrut, ref: Referentiel): ProduitEnrichi = {
         if (ref == null) {
-          val produitEnrichi = ProduitEnrichi(achat.id, "REF INCONNUE", achat.price)
+          val produitEnrichi = ProduitEnrichi(achat.id, Some("REF INCONNUE"), achat.price)
           logger.info(produitEnrichi.toString)
           produitEnrichi
         } else {
@@ -54,14 +61,14 @@ object KafkaStream {
           logger.info(produitEnrichi.toString)
           produitEnrichi
         }
-      })
+      }
+    })
 
-    //    enriched.to(Serdes.String(), achatEnrichiSerde, TOPIC_ACHATS_ENRICHIS)
+  enriched.to(Serdes.String(), achatEnrichiSerde, TOPIC_ACHATS_ENRICHIS)
 
-    val streams: KafkaStreams = new KafkaStreams(builder, streamsConfiguration)
-    streams.start()
+  val streams: KafkaStreams = new KafkaStreams(builder, streamsConfiguration)
+  streams.start()
 
-    //    new KafkaRestService(streams).start
-  }
+  new KafkaRestService(streams).start()
 }
 

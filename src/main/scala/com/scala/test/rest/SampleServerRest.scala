@@ -1,19 +1,15 @@
 package com.scala.test.rest
 
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.{GET, Path, Produces}
+import akka.actor.ActorSystem
+import spray.routing.SimpleRoutingApp
 
-@Path("/")
-object SampleServerRest extends ServerRest {
+object SampleServerRest extends App with SimpleRoutingApp {
 
-//  def main(args: Array[String]) {
-//    start
-//  }
-//
-//  @GET
-//  @Path("/hello")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  def hello(): String = {
-//    "Hello world"
-//  }
+  implicit val system = ActorSystem("kafka-rest")
+
+  startServer(interface = "localhost", port = 7070) {
+    path("hello").&(get.&(complete {
+      "hello world"
+    }))
+  }
 }

@@ -6,6 +6,11 @@ kafka-console-producer.sh --broker-list localhost:9092 --topic referentiel --pro
 1,{"id":1, "name":"produit1"}
 2,{"id":2, "name":"produit2"}
 3,{"id":3, "name":"produit3"}
+4,{"id":4, "name":"produit4"}
+5,{"id":5, "name":"produit5"}
+6,{"id":6, "name":"produit6"}
+7,{"id":7, "name":"produit7"}
+11,{"id":11, "name":"produit11"}
 ```
 
 ####Achats
