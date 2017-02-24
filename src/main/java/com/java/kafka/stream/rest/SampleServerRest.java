@@ -1,4 +1,4 @@
-package com.java.test.rest;
+package com.java.kafka.stream.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

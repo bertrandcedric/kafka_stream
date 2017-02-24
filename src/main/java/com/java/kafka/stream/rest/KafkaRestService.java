@@ -1,6 +1,7 @@
-package com.java.test.rest;
+package com.java.kafka.stream.rest;
 
-import com.java.test.model.Referentiel;
+import com.java.kafka.stream.KafkaStream;
+import com.java.kafka.stream.model.Referentiel;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -13,10 +14,8 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.java.test.KafkaStream.REFERENTIEL_STORE;
-
 @Path("/")
-public class KafkaRestService extends com.java.test.rest.ServerRest {
+public class KafkaRestService extends ServerRest {
 
     private final KafkaStreams streams;
 
@@ -28,7 +27,7 @@ public class KafkaRestService extends com.java.test.rest.ServerRest {
     @Path("/referentiels")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Referentiel> referentiels() {
-        ReadOnlyKeyValueStore<String, Referentiel> referentiel_store = streams.store(REFERENTIEL_STORE, QueryableStoreTypes.<String, Referentiel>keyValueStore());
+        ReadOnlyKeyValueStore<String, Referentiel> referentiel_store = streams.store(KafkaStream.REFERENTIEL_STORE, QueryableStoreTypes.<String, Referentiel>keyValueStore());
         KeyValueIterator<String, Referentiel> all = referentiel_store.all();
         ArrayList<Referentiel> referentiels = new ArrayList<>();
         while (all.hasNext()) {

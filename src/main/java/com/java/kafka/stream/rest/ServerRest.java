@@ -1,4 +1,4 @@
-package com.java.test.rest;
+package com.java.kafka.stream.rest;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

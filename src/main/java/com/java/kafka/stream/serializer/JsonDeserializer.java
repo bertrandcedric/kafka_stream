@@ -1,4 +1,4 @@
-package com.java.test.serializer;
+package com.java.kafka.stream.serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;

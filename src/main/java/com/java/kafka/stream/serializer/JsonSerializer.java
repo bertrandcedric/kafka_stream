@@ -1,4 +1,4 @@
-package com.java.test.serializer;
+package com.java.kafka.stream.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

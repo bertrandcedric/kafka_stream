@@ -1,4 +1,4 @@
-package com.java.test.model;
+package com.java.kafka.stream.model;
 
 public class Referentiel {
 

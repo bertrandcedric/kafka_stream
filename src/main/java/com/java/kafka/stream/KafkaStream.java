@@ -1,11 +1,11 @@
-package com.java.test;
+package com.java.kafka.stream;
 
-import com.java.test.model.ProduitBrut;
-import com.java.test.model.ProduitEnrichi;
-import com.java.test.model.Referentiel;
-import com.java.test.rest.KafkaRestService;
-import com.java.test.serializer.JsonDeserializer;
-import com.java.test.serializer.JsonSerializer;
+import com.java.kafka.stream.model.ProduitBrut;
+import com.java.kafka.stream.model.ProduitEnrichi;
+import com.java.kafka.stream.model.Referentiel;
+import com.java.kafka.stream.rest.KafkaRestService;
+import com.java.kafka.stream.serializer.JsonDeserializer;
+import com.java.kafka.stream.serializer.JsonSerializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
