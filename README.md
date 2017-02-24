@@ -40,7 +40,7 @@ http://localhost:7077/kafka/referentiels
 
 Pour tester la version java (utilisation du profil par defaut)
 ```
-mvn clean package
+mvn clean package -P java
 ```
 
 Pour tester la version scala (utilisation du profil scala)
