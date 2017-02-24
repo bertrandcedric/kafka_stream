@@ -1,5 +1,7 @@
 package com.java.kafka.stream.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.kafka.stream.KafkaStream;
 import com.java.kafka.stream.model.Referentiel;
 import org.apache.kafka.streams.KafkaStreams;
@@ -18,6 +20,7 @@ import java.util.List;
 public class KafkaRestService extends ServerRest {
 
     private final KafkaStreams streams;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public KafkaRestService(final KafkaStreams streams) {
         this.streams = streams;
@@ -26,14 +29,14 @@ public class KafkaRestService extends ServerRest {
     @GET
     @Path("/referentiels")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Referentiel> referentiels() {
+    public String referentiels() throws JsonProcessingException {
         ReadOnlyKeyValueStore<String, Referentiel> referentiel_store = streams.store(KafkaStream.REFERENTIEL_STORE, QueryableStoreTypes.<String, Referentiel>keyValueStore());
         KeyValueIterator<String, Referentiel> all = referentiel_store.all();
         ArrayList<Referentiel> referentiels = new ArrayList<>();
         while (all.hasNext()) {
             referentiels.add(all.next().value);
         }
-        return referentiels;
+        return objectMapper.writeValueAsString(referentiels);
     }
 
     @GET
