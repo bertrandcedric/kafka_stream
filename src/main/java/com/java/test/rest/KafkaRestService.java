@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.java.test.KafkaStream.REFERENTIEL_STORE;
 
-@Path("/kafka")
+@Path("/")
 public class KafkaRestService extends com.java.test.rest.ServerRest {
 
     private final KafkaStreams streams;
