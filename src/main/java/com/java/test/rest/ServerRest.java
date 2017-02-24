@@ -8,7 +8,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 public abstract class ServerRest {
 
-    private static final int PORT = 7077;
+    private static final int PORT = 7070;
     private Server server;
 
     public void start() throws Exception {
