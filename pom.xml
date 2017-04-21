@@ -12,6 +12,7 @@
     </prerequisites>
     <modules>
         <module>kafka-connect-twitter</module>
+        <module>kafka-connect-es</module>
         <module>kafka-stream</module>
     </modules>
     <properties>
