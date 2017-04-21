@@ -1,3 +1,10 @@
+#### Kafka + prometheus + Grafana
+
+start kafka + jmx-exporte => 
+KAFKA_OPTS=-javaagent:/usr/app/jmx_prometheus_javaagent.jar=<LISTEN_PORT>:<PATH_TO_CONFIG_FILE>
+KAFKA_OPTS=-javaagent:./jmx_prometheus_javaagent-0.9.jar=1234:jmx_exporter-kafka-broker.yml
+
+
 ####Referentiel
 
 kafka-console-producer.sh --broker-list localhost:9092 --topic referentiel --property parse.key=true --property key.separator=,
